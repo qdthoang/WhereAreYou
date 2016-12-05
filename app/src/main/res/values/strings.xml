@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">WhereAreYou</string>
+    
+    <string name="title">Where Are You</string>
+    <string name="username">Username: </string>
+    <string name="password">Password: </string>
+    <string name="login">Login</string>
+    <string name="sign_up">Sign Up</string>
+    
+    <string name="create_acc">Create Account</string>
+    
+    <string name="accept">Accept</string>
+    
+    <string name="find_friends">Find Friends</string>
+    <string name="update">Update</string>
+    <string name="find">Find</string>
+    
+    <string name="add_friends">Add Friends</string>
+    <string name="add_friend">Add Friend</string>
+    
+    <string name="update_location">Location</string>
+    <string name="request_user">Request User</string>
+</resources>
