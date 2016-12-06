@@ -22,8 +22,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.*;
 
 public class LoginActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener {
@@ -31,11 +30,13 @@ public class LoginActivity extends AppCompatActivity
     private GoogleSignInAccount acct;
     private DatabaseReference firebase;
     private FirebaseAuth auth;
-    private String users;
+    private String user;
     private TextView status;
+    private static FirebaseLogger fblog;
     private FirebaseAuth.AuthStateListener authListener;
     private static final int RC_SIGN_IN = 9001;
     private static String TAG = "LoginActivity";
+    private static final String USR = "users";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,21 +52,13 @@ public class LoginActivity extends AppCompatActivity
                 .build();
 
         auth = FirebaseAuth.getInstance();
-        authListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    users = "client-" + Integer.toString(Math.abs(user.getUid().hashCode()));
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + users);
-                    status.setText("Signin as " + user.getDisplayName());
-                    updateUI(true);
-                } else {
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                    updateUI(false);
-                }
-            }
-        };
+//        authListener = new FirebaseAuth.AuthStateListener() {
+//            @Override
+//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//                FirebaseUser fbuser = firebaseAuth.getCurrentUser();
+//                firebase.child("users").push().setValue(Integer.toString(Math.abs(fbuser.getUid().hashCode())));
+//            }
+//        };
 
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
@@ -83,7 +76,6 @@ public class LoginActivity extends AppCompatActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
@@ -94,20 +86,17 @@ public class LoginActivity extends AppCompatActivity
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
+            acct = result.getSignInAccount();
             Intent nextIntent = new Intent(this, UpdateLocationActivity.class);
             startActivity(nextIntent);
+            firebase = FirebaseDatabase.getInstance().getReference();
+            firebase.child(USR).push().setValue(acct.getEmail());
         }
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
 
-    private void updateUI(boolean signedIn) {
-        if (signedIn) {
-            Intent nextIntent = new Intent(this, UpdateLocationActivity.class);
-            startActivity(nextIntent);
-        }
-    }
+
 }
