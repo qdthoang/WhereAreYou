@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.wru.whereareyou.common.RestClient;
+import com.android.wru.whereareyou.common.RestClientUsersResource;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -23,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.*;
+import org.json.JSONException;
 
 public class LoginActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener {
@@ -41,6 +44,11 @@ public class LoginActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try {
+            new RestClientUsersResource().getAllUsers();
+        } catch (JSONException ex) {
+            ex.getMessage();
+        }
         setContentView(R.layout.activity_login);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -52,13 +60,6 @@ public class LoginActivity extends AppCompatActivity
                 .build();
 
         auth = FirebaseAuth.getInstance();
-//        authListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                FirebaseUser fbuser = firebaseAuth.getCurrentUser();
-//                firebase.child("users").push().setValue(Integer.toString(Math.abs(fbuser.getUid().hashCode())));
-//            }
-//        };
 
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
@@ -90,13 +91,14 @@ public class LoginActivity extends AppCompatActivity
             Intent nextIntent = new Intent(this, UpdateLocationActivity.class);
             startActivity(nextIntent);
             firebase = FirebaseDatabase.getInstance().getReference();
-            firebase.child(USR).push().setValue(acct.getEmail());
+            firebase.child(USR + "/" + acct.getEmail().split("@", 2)[0]).push().setValue("Hello" +
+                    "" +
+                    "");
+
         }
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-    }
-
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) { }
 
 }
