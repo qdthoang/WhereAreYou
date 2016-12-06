@@ -94,29 +94,8 @@ public class LoginActivity extends AppCompatActivity
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
-            // Signed in successfully, show authenticated UI.
-            GoogleSignInAccount acct = result.getSignInAccount();
-            AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-            auth.signInWithCredential(credential)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
-                            if (!task.isSuccessful()) {
-                                Log.w(TAG, "signInWithCredential", task.getException());
-                                status.setText("Firebase authentication failed : " + task.getException());
-                            } else {
-                                firebase = FirebaseDatabase.getInstance().getReference();
-//                        requestLogger();
-//                        updateUI(true);
-                            }
-                        }
-                    });
-//            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
-//            updateUI(true);
-        } else {
-            // Signed out, show unauthenticated UI.
-//            updateUI(false);
+            Intent nextIntent = new Intent(this, UpdateLocationActivity.class);
+            startActivity(nextIntent);
         }
     }
 
@@ -128,6 +107,7 @@ public class LoginActivity extends AppCompatActivity
     private void updateUI(boolean signedIn) {
         if (signedIn) {
             Intent nextIntent = new Intent(this, UpdateLocationActivity.class);
+            startActivity(nextIntent);
         }
     }
 }
