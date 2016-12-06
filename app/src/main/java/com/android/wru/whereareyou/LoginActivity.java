@@ -51,14 +51,11 @@ public class LoginActivity extends AppCompatActivity
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+                // Start authenticating with Google ID first.
+                startActivityForResult(signInIntent, RC_SIGN_IN);
             }
         });
-    }
-
-    private void signIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     @Override
@@ -77,6 +74,23 @@ public class LoginActivity extends AppCompatActivity
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
+            AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+            auth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                                         @Override
+                                         public void onComplete(@NonNull Task<AuthResult> task) {
+                    Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+                    if (! task.isSuccessful()) {
+                        Log.w(TAG, "signInWithCredential", task.getException());
+                        status.setText("Firebase authentication failed : " + task.getException());
+                    }
+                    else {
+                        firebase = FirebaseDatabase.getInstance().getReference();
+//                        requestLogger();
+//                        updateUI(true);
+                    }
+                }
+            });
 //            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
 //            updateUI(true);
         } else {
