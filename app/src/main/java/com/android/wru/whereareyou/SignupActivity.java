@@ -93,9 +93,9 @@ public class SignupActivity extends AppCompatActivity {
         params.put("username", signupUsername);
         params.put("password", signupPassword);
         params.put("email", signupEmail);
-        Log.d("postAccessToken", "username: " + signupUsername);
-        Log.d("postAccessToken", "password: " + signupPassword);
-        Log.d("postAccessToken", "email: " + signupEmail);
+        Log.d("creatAccount", "username: " + signupUsername);
+        Log.d("creatAccount", "password: " + signupPassword);
+        Log.d("creatAccount", "email: " + signupEmail);
         RestClient.post("users", params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -105,7 +105,7 @@ public class SignupActivity extends AppCompatActivity {
                  * response --> new Token object
                  * save to newUser instance variable
                  */
-                Log.d("postAccessToken", "status code: " + statusCode);
+                Log.d("creatAccount", "status code: " + statusCode);
                 Toast.makeText(SignupActivity.this, "User created successfully", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                 startActivity(intent);
@@ -118,8 +118,8 @@ public class SignupActivity extends AppCompatActivity {
                  * statusCode = 401 Unauthorized
                  * response -> show error
                  */
-                Log.d("postAccessToken", "get token failed");
-                Log.d("postAccessToken", "status code: " + statusCode);
+                Log.d("creatAccount", "create fail");
+                Log.d("creatAccount", "status code: " + statusCode);
                 Toast.makeText(SignupActivity.this, "Error", Toast.LENGTH_SHORT).show();
             }
         });
