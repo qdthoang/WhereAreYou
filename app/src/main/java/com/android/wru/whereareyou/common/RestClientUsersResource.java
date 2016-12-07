@@ -39,6 +39,7 @@ public class RestClientUsersResource
                      * -->
                      * [user , user , user ... ]
                      */
+                    usersList = new ArrayList<User>();
                     JSONArray users = response.getJSONArray("data");
                     for (int i = 0; i < users.length(); i++) {
                         /**
@@ -82,6 +83,7 @@ public class RestClientUsersResource
                      * -->
                      * [user , user , user ... ]
                      */
+                    usersList = new ArrayList<User>();
                     JSONArray users = response.getJSONArray("data");
                     for (int i = 0; i < users.length(); i++) {
                         /**

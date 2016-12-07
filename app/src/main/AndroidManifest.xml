@@ -16,7 +16,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".SignupActivity" />
-        <activity android:name=".NotificationActivity" />
         <activity android:name=".FriendListActivity" />
         <activity android:name=".AddFriendActivity" />
         <activity android:name=".UpdateLocationActivity"></activity>
