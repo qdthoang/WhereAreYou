@@ -1,5 +1,6 @@
 package com.android.wru.whereareyou;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -10,7 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.wru.whereareyou.common.RestClient;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -29,12 +32,22 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import cz.msebera.android.httpclient.Header;
 
 public class UpdateLocationActivity extends AppCompatActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
+
+    private String token;
+    static final String ACCESS_TOKEN = "access_token";
 
     private static final String TAG = UpdateLocationActivity.class.getSimpleName();
     private GoogleMap mMap;
@@ -365,4 +378,45 @@ public class UpdateLocationActivity extends AppCompatActivity implements
             mCurrentLocation = null;
         }
     }
+
+    public void updateLocation (View v) throws JSONException {
+        RequestParams params = new RequestParams();
+        params.put("location_name", "");
+        params.put("messages", "");
+        params.put("address", "");
+        params.put("latitude", mCurrentLocation.getLatitude());
+        params.put("longitude", mCurrentLocation.getLongitude());
+        RestClient.post("oauth/access_token", params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                /**
+                 * On success,
+                 * statusCode = 200 OK
+                 * response --> new Token object
+                 * save to newUser instance variable
+                 */
+                try {
+                    token = response.getString("access_token");
+                    Log.d("postAccessToken", "get token success: " + token);
+                    Log.d("postAccessToken", "status code: " + statusCode);
+                    Intent intent = new Intent(UpdateLocationActivity.this, UpdateLocationActivity.class);
+                    intent.putExtra(ACCESS_TOKEN, token);
+                    startActivity(intent);
+                } catch (JSONException ex) {
+                    ex.getMessage();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                /**
+                 * On failure
+                 * statusCode = 401 Unauthorized
+                 * response -> show error
+                 */
+                Toast.makeText(UpdateLocationActivity.this, "Cannot connect to database", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }
