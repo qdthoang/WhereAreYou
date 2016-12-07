@@ -4,11 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.wru.whereareyou.common.RestClient;
+import com.android.wru.whereareyou.common.RestClientLogin;
 import com.android.wru.whereareyou.common.RestClientUsersResource;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -25,21 +30,27 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.*;
-import org.json.JSONException;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
-public class LoginActivity extends AppCompatActivity
-        implements GoogleApiClient.OnConnectionFailedListener {
-    private GoogleApiClient mGoogleApiClient;
-    private GoogleSignInAccount acct;
-    private DatabaseReference firebase;
-    private FirebaseAuth auth;
-    private String user;
-    private TextView status;
-    private static FirebaseLogger fblog;
-    private FirebaseAuth.AuthStateListener authListener;
-    private static final int RC_SIGN_IN = 9001;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import cz.msebera.android.httpclient.Header;
+
+public class LoginActivity extends AppCompatActivity {
     private static String TAG = "LoginActivity";
-    private static final String USR = "users";
+
+    private String loginUsername;
+    private String loginPassword;
+    private String token;
+    static final String ACCESS_TOKEN = "access_token";
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putString(ACCESS_TOKEN, token);
+        super.onSaveInstanceState(savedInstanceState);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,55 +61,94 @@ public class LoginActivity extends AppCompatActivity
             ex.getMessage();
         }
         setContentView(R.layout.activity_login);
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
 
-        auth = FirebaseAuth.getInstance();
+        if (savedInstanceState != null) {
+            token = savedInstanceState.getString(ACCESS_TOKEN);
+        }
 
-        SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
-        signInButton.setSize(SignInButton.SIZE_STANDARD);
-        signInButton.setScopes(gso.getScopeArray());
-        signInButton.setOnClickListener(new View.OnClickListener() {
+        EditText mLoginUsername = (EditText) findViewById(R.id.login_username);
+        mLoginUsername.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-                // Start authenticating with Google ID first.
-                startActivityForResult(signInIntent, RC_SIGN_IN);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                loginUsername = s.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        EditText mLoginPassword = (EditText) findViewById(R.id.login_password);
+        mLoginPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                loginPassword = s.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
             }
         });
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result);
-        }
+    public void login (View v) throws JSONException{
+        RequestParams params = new RequestParams();
+        params.put("grant_type", "password");
+        params.put("client_id", 0);
+        params.put("client_secret", "secret0");
+        params.put("username", loginUsername);
+        params.put("password", loginPassword);
+        Log.d("postAccessToken", "username: " + loginUsername);
+        Log.d("postAccessToken", "password: " + loginPassword);
+        RestClient.post("oauth/access_token", params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                /**
+                 * On success,
+                 * statusCode = 200 OK
+                 * response --> new Token object
+                 * save to newUser instance variable
+                 */
+                try {
+                    token = response.getString("access_token");
+                    Log.d("postAccessToken", "get token success: " + token);
+                    Log.d("postAccessToken", "status code: " + statusCode);
+                    Intent intent = new Intent(LoginActivity.this, FriendListActivity.class);
+                    intent.putExtra(ACCESS_TOKEN, token);
+                    startActivity(intent);
+                } catch (JSONException ex) {
+                    ex.getMessage();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                /**
+                 * On failure
+                 * statusCode = 401 Unauthorized
+                 * response -> show error
+                 */
+                Log.d("postAccessToken", "get token failed");
+                Log.d("postAccessToken", "status code: " + statusCode);
+                Toast.makeText(LoginActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void handleSignInResult(GoogleSignInResult result) {
-        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
-        if (result.isSuccess()) {
-            acct = result.getSignInAccount();
-            Intent nextIntent = new Intent(this, UpdateLocationActivity.class);
-            startActivity(nextIntent);
-            firebase = FirebaseDatabase.getInstance().getReference();
-            firebase.child(USR + "/" + acct.getEmail().split("@", 2)[0]).push().setValue("Hello" +
-                    "" +
-                    "");
-
-        }
+    public void signUp (View v) {
+        Intent intent = new Intent(this, SignupActivity.class);
+        startActivity(intent);
     }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) { }
-
+    public String getToken () {
+        return token;
+    }
 }

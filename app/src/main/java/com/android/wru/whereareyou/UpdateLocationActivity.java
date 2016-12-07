@@ -278,7 +278,6 @@ public class UpdateLocationActivity extends AppCompatActivity implements
          */
         if (mLocationPermissionGranted) {
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            mCurrentLocation.ge
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
                     mLocationRequest, this);
         }

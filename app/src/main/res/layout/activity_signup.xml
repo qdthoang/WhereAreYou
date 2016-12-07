@@ -34,6 +34,7 @@
             android:paddingRight="9dp"/>
 
         <EditText
+            android:id="@+id/signup_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/Widget.AppCompat.EditText"/>
@@ -56,6 +57,30 @@
             android:paddingRight="10dp"/>
 
         <EditText
+            android:id="@+id/signup_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.EditText"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/email"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"/>
+
+        <EditText
+            android:id="@+id/signup_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/Widget.AppCompat.EditText"/>
@@ -65,6 +90,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/create_acc"
+        android:onClick="createAccount"
         android:layout_marginLeft="75dp"
         android:layout_marginRight="75dp"
         android:layout_marginTop="2dp"
