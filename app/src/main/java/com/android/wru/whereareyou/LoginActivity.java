@@ -121,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
                     token = response.getString("access_token");
                     Log.d("postAccessToken", "get token success: " + token);
                     Log.d("postAccessToken", "status code: " + statusCode);
-                    Intent intent = new Intent(LoginActivity.this, UpdateLocationActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, FriendListActivity.class);
                     intent.putExtra(ACCESS_TOKEN, token);
                     startActivity(intent);
                 } catch (JSONException ex) {
