@@ -39,4 +39,9 @@ public class User
     {
         this.followings.add(user);
     }
+
+    @Override
+    public String toString() {
+        return email;
+    }
 }
