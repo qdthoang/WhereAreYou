@@ -29,9 +29,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/username"
-            android:paddingLeft="9dp"
-            android:paddingRight="9dp"/>
+            android:text="@string/email"
+            android:paddingLeft="19dp"
+            android:paddingRight="19dp"/>
 
         <EditText
             android:id="@+id/login_username"
@@ -53,13 +53,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/password"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"/>
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"/>
 
         <EditText
             android:id="@+id/login_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="textPassword"
             style="@style/Widget.AppCompat.EditText"/>
     </LinearLayout>
 
