@@ -81,6 +81,8 @@ public class UpdateLocationActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        token = intent.getStringExtra(LoginActivity.ACCESS_TOKEN);
 
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
@@ -293,6 +295,7 @@ public class UpdateLocationActivity extends AppCompatActivity implements
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
                     mLocationRequest, this);
+            updateLocation();
         }
     }
 
@@ -379,44 +382,24 @@ public class UpdateLocationActivity extends AppCompatActivity implements
         }
     }
 
-    public void updateLocation (View v) throws JSONException {
+    public void updateLocation () {
         RequestParams params = new RequestParams();
         params.put("location_name", "");
         params.put("messages", "");
         params.put("address", "");
         params.put("latitude", mCurrentLocation.getLatitude());
         params.put("longitude", mCurrentLocation.getLongitude());
-        RestClient.post("oauth/access_token", params, new JsonHttpResponseHandler() {
+        RestClient.getClient().addHeader("Authorization", "Bearer " + this.token);
+        RestClient.put("location", params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                /**
-                 * On success,
-                 * statusCode = 200 OK
-                 * response --> new Token object
-                 * save to newUser instance variable
-                 */
-                try {
-                    token = response.getString("access_token");
-                    Log.d("postAccessToken", "get token success: " + token);
-                    Log.d("postAccessToken", "status code: " + statusCode);
-                    Intent intent = new Intent(UpdateLocationActivity.this, UpdateLocationActivity.class);
-                    intent.putExtra(ACCESS_TOKEN, token);
-                    startActivity(intent);
-                } catch (JSONException ex) {
-                    ex.getMessage();
-                }
+                Log.d("put location", "update success");
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                /**
-                 * On failure
-                 * statusCode = 401 Unauthorized
-                 * response -> show error
-                 */
                 Toast.makeText(UpdateLocationActivity.this, "Cannot connect to database", Toast.LENGTH_SHORT).show();
             }
         });
     }
-
 }

@@ -31,7 +31,8 @@ public class FriendListActivity extends AppCompatActivity {
     private ArrayAdapter<User> adapter;
 
     private void initalizeData() {
-        RestClient.get("users", null, new JsonHttpResponseHandler()
+        RestClient.getClient().addHeader("Authorization", "Bearer " + token);
+        RestClient.get("following", null, new JsonHttpResponseHandler()
         {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response)
@@ -71,7 +72,7 @@ public class FriendListActivity extends AppCompatActivity {
         initalizeData();
         Log.d("onCreate", "token: " + token);
 
-        lv=(ListView) findViewById(R.id.listView);
+        lv = (ListView) findViewById(R.id.listView);
         adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, usersList);
 

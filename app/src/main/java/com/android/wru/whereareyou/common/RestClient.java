@@ -40,6 +40,16 @@ public class RestClient
     }
 
     /**
+     * HTTP PUT METHOD
+     * @param url relative url
+     * @param params request body
+     * @param responseHandler
+     */
+    public static void put(String url, RequestParams params, AsyncHttpResponseHandler responseHandler)
+    {
+        getClient().put(getAbsoluteUrl(url), params, responseHandler);
+    }
+    /**
      * Get absolute path
      * @param relativeUrl
      * @return String
@@ -49,7 +59,7 @@ public class RestClient
         return BASE_URL + relativeUrl;
     }
 
-    private static AsyncHttpClient getClient()
+    public static AsyncHttpClient getClient()
     {
       // Return the synchronous HTTP client when the thread is not prepared
         return Looper.myLooper() == null ? syncHttpClient : asyncHttpClient;
