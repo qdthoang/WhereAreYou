@@ -91,5 +91,21 @@ public class FriendListActivity extends AppCompatActivity {
         });
     }
 
+    public void addFriend(View v) {
+        Intent intent = new Intent(FriendListActivity.this, AddFriendActivity.class);
+        intent.putExtra(ACCESS_TOKEN, token);
+        startActivity(intent);
+    }
 
+    public void acceptFriend(View v) {
+        Intent intent = new Intent(FriendListActivity.this, AcceptFriendActivity.class);
+        intent.putExtra(ACCESS_TOKEN, token);
+        startActivity(intent);
+    }
+
+    public void updateLocation(View v) {
+        Intent intent = new Intent(FriendListActivity.this, UpdateLocationActivity.class);
+        intent.putExtra(ACCESS_TOKEN, token);
+        startActivity(intent);
+    }
 }

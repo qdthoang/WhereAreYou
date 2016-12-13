@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_add_friend"
+    android:id="@+id/activity_accept_friend"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.android.wru.whereareyou.AddFriendActivity">
+    tools:context="com.android.wru.whereareyou.AcceptFriendActivity">
 
     <ListView
-        android:id="@+id/addFriendList"
+        android:id="@+id/acceptFriendList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="10dp"
@@ -15,5 +15,4 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp">
     </ListView>
-
 </RelativeLayout>
