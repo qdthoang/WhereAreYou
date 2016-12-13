@@ -65,14 +65,14 @@ public class AcceptFriendActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_friend_list);
+        setContentView(R.layout.activity_accept_friend);
 
         Intent intent = getIntent();
         token = intent.getStringExtra(LoginActivity.ACCESS_TOKEN);
         initializeData();
         Log.d("onCreate", "token: " + token);
 
-        lv = (ListView) findViewById(R.id.listView);
+        lv = (ListView) findViewById(R.id.acceptFriendList);
         adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, usersList);
 
