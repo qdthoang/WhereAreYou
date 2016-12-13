@@ -41,6 +41,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCaDPo0qsRiT8RJCQA77gMMSc6QG_N1hEA" />
 
+        <activity android:name=".GetFriendLocation"></activity>
 
     </application>
 
