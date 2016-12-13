@@ -33,7 +33,6 @@ public class GetFriendLocation extends AppCompatActivity
     private String username;
     private GoogleMap mMap;
     private static final int DEFAULT_ZOOM = 15;
-    protected GoogleApiClient mGoogleApiClient;
 
 
     private void initializeData() {
@@ -56,7 +55,7 @@ public class GetFriendLocation extends AppCompatActivity
 
                     friendLocation = new LatLng(response.getDouble("latitude"), response.getDouble("longitude"));
                     mMap.addMarker(new MarkerOptions().position(friendLocation)
-                            .title("Marker in Sydney"));
+                            .title("Marker in frined location"));
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                             friendLocation, DEFAULT_ZOOM));
 
