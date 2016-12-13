@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import com.android.wru.whereareyou.common.RestClient;
 import com.android.wru.whereareyou.common.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -79,40 +81,40 @@ public class AddFriendActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1,
                                     int position, long arg3) {
-
+                addFriend(usersList.get(position).getUsername());
             }
         });
     }
 
-    public void addFriend() {
+    public void addFriend(String username) {
         RestClient.getClient().addHeader("Authorization", "Bearer " + token);
-        RestClient.get("users", null, new JsonHttpResponseHandler()
+        RestClient.post("following/" + username, null, new JsonHttpResponseHandler()
         {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response)
-            {
-                try {
-                    /**
-                     * { data [ user, user ... user], meta { } }
-                     * -->
-                     * [user , user , user ... ]
-                     */
-                    usersList.clear();
-                    JSONArray users = response.getJSONArray("data");
-                    for (int i = 0; i < users.length(); i++) {
-                        /**
-                         * user : { username, email }
-                         */
-                        JSONObject tmpUser = users.getJSONObject(i);
-                        User user = new User(tmpUser.getString("username"), tmpUser.getString("email"));
 
-                        usersList.add(user);
-                    }
-                    adapter.notifyDataSetChanged();
-                } catch (JSONException ex) {
-                    ex.getMessage();
-                }
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                /**
+                 * On success,
+                 * statusCode = 200 OK
+                 * response --> new Token object
+                 * save to newUser instance variable
+                 */
+                Toast.makeText(AddFriendActivity.this, "Friend Request Sent Successfully", Toast.LENGTH_SHORT).show();
             }
+
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+            /**
+             * On failure
+             * statusCode = 401 Unauthorized
+             * response -> show error
+             */
+            Log.d("postAccessToken", "get token failed");
+            Log.d("postAccessToken", "status code: " + statusCode);
+            Toast.makeText(AddFriendActivity.this, "Fail to Send Friend Request", Toast.LENGTH_SHORT).show();
+        }
         });
     }
+
 }
