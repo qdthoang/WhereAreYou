@@ -30,7 +30,7 @@ public class FriendListActivity extends AppCompatActivity {
     private ArrayList<User> usersList = new ArrayList<>();
     private ArrayAdapter<User> adapter;
 
-    private void initalizeData() {
+    private void initializeData() {
         RestClient.getClient().addHeader("Authorization", "Bearer " + token);
         RestClient.get("following", null, new JsonHttpResponseHandler()
         {
@@ -69,7 +69,7 @@ public class FriendListActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         token = intent.getStringExtra(LoginActivity.ACCESS_TOKEN);
-        initalizeData();
+        initializeData();
         Log.d("onCreate", "token: " + token);
 
         lv = (ListView) findViewById(R.id.listView);
