@@ -119,4 +119,10 @@ public class AcceptFriendActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void back(View v) {
+        Intent intent = new Intent(AcceptFriendActivity.this, FriendListActivity.class);
+        intent.putExtra(ACCESS_TOKEN, token);
+        startActivity(intent);
+    }
 }

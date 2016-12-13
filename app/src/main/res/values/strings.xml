@@ -4,15 +4,18 @@
     <string name="title">Where Are You</string>
     <string name="username">Username: </string>
     <string name="password">Password: </string>
-    <string name="login">Login</string>
+    <string name="login">Log In</string>
     <string name="sign_up">Sign Up</string>
 
     <string name="create_acc">Create Account</string>
     <string name="email">Email: </string>
 
+    <string name="friend_list">Friend List</string>
     <string name="add">Add New Friends</string>
     <string name="accept">Accept Requests</string>
     <string name="update">Update Location</string>
+
+    <string name="back">Back</string>
 
     <string name="title_activity_maps">Current Place Details on Map</string>
     <string name="default_info_title">Default Location</string>
