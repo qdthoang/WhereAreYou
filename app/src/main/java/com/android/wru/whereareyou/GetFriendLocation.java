@@ -55,7 +55,7 @@ public class GetFriendLocation extends AppCompatActivity
 
                     friendLocation = new LatLng(response.getDouble("latitude"), response.getDouble("longitude"));
                     mMap.addMarker(new MarkerOptions().position(friendLocation)
-                            .title("Marker in frined location"));
+                            .title("Marker at friend location"));
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                             friendLocation, DEFAULT_ZOOM));
 
